@@ -199,6 +199,12 @@ set :: JSON → JSON → JSON → JSON
 Set the value k to v in object
 
 ```haskell
+delete :: JSON → JSON → JSON
+```
+
+Delete the key k (and associated value) in object
+
+```haskell
 modify :: JSON → (JSON → JSON) → JSON → JSON
 ```
 

@@ -37,7 +37,7 @@ scope = M.fromList (map (definitionName &&&definitionCore) (concatMap snd functi
 -- | All functions.
 functions :: [(Text, [Definition])]
 functions =
-  [ ("Record access", [getf, setf, modifyf, keysf, elemsf])
+  [ ("Record access", [getf, setf, deletef, modifyf, keysf, elemsf])
   , ( "Sequences"
     , [ mapf
       , filterf
@@ -186,6 +186,24 @@ setf =
       FunctionType
         JSONType
         (FunctionType JSONType (FunctionType JSONType JSONType))
+  }
+
+deletef :: Definition
+deletef =
+  Definition
+  { definitionDoc = "Delete the key k (and associated value) in object"
+  , definitionName = Variable "delete"
+  , definitionCore =
+      (EvalCore
+         (\key ->
+            EvalCore
+              (\obj ->
+                case (key, obj) of
+                  (ConstantCore (StringConstant k), RecordCore o) ->
+                    (RecordCore (HM.delete k o))
+                  _ -> error "type error in arguments to: delete")))
+  , definitionType =
+        FunctionType JSONType (FunctionType JSONType JSONType)
   }
 
 idf :: Definition
